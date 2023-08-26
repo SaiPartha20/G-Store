@@ -1,0 +1,8 @@
+Flask==2.0.1
+SQLAlchemy==1.4
+flask-restful
+flask_login 
+flask_bcrypt 
+flask_wtf 
+wtforms 
+email_validator
