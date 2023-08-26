@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>GSMS</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="csrf-token"
+      content="kmapods5wQ5L1hn7rcR9OPst7EsN0gC7SrHh3m9K"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Roboto:400,300,600,700"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='css/styles.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='css/mpstyles.css') }}"
+    />
+
+    <style>
+      .hidden-element {
+        display: none;
+        visibility: hidden;
+      }
+    </style>
+  </head>
+  <body class="bg-nav">
+    <div>
+      <nav class="navbar">
+        <a class="navbar-brand text-light" href="{{url_for('login')}}"
+          >G-Store</a
+        >
+        <a
+          class="btn btn-success text-light"
+          href="{{url_for('category_management')}}"
+          >Category Management</a
+        >
+        <a
+          class="btn btn-outline-primary text-light"
+          href="{{url_for('manager')}}"
+          >Logout</a
+        >
+      </nav>
+    </div>
+    <div class="container">
+      <h1 class="mt-5 mb-4">Product Management</h1>
+      <div class="d-flex justify-content-end">
+        <button
+          type="button"
+          class="btn btn-primary add-btn btn-success"
+          data-toggle="modal"
+          data-target="#productModal"
+        >
+          Add New Product
+        </button>
+      </div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Product ID</th>
+            <th>Product Name</th>
+            <th class="hidden-element">Category ID</th>
+            <th>Category</th>
+            <th class="hidden-element">Unit-ID</th>
+            <th>Unit</th>
+            <th>Quantity</th>
+            <th>Price per Unit (Rs)</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for product in products %}
+          <tr>
+            <td class="product-id">{{ product.id }}</td>
+            <td class="product-name">{{ product.name }}</td>
+            <td class="category-id hidden-element">{{product.category.id}}</td>
+            <td class="category-name">{{product.category.name}}</td>
+            <td class="unit-id hidden-element">{{product.unit.id}}</td>
+            <td class="unit-unit">{{product.unit.unit}}</td>
+            <td class="quantity">{{ product.quantity }}</td>
+            <td class="price-per-unit">{{ product.price_per_unit }}</td>
+            <td>
+              <button
+                class="btn btn-primary edit-btn"
+                data-id="{{ product.id }}"
+                data-toggle="modal"
+                data-target="#editModal"
+              >
+                Edit
+              </button>
+              <button
+                class="btn btn-danger delete-btn"
+                data-id="{{ product.id }}"
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <div id="add-form" class="mt-4" style="display: none">
+        <div class="modal" id="addModal">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">Add New Product</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="edit-form" class="mt-4" style="display: none">
+        <div class="modal" id="editModal">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">Edit Product</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="modal fade"
+        id="productModal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="productModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="productModalLabel">
+                Product Details
+              </h5>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                id="close-btn"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form id="product-form">
+                <input type="hidden" name="product_id" id="product_id" />
+                <div class="form-group">
+                  <label>Category:</label>
+                  <select name="category" id="category" class="form-control">
+                    {% for category in categories %}
+                    <option value="{{ category.id }}">
+                      {{ category.name }}
+                    </option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Product Name:</label>
+                  <input
+                    type="text"
+                    name="name"
+                    id="name"
+                    class="form-control"
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Quantity:</label>
+                  <input
+                    type="number"
+                    name="quantity"
+                    id="quantity"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Unit:</label>
+                  <select name="unit" id="unit" class="form-control">
+                    {% for unit in units %}
+                    <option value="{{ unit.id }}">{{ unit.unit }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Price per unit:</label>
+                  <input
+                    type="number"
+                    name="price_per_unit"
+                    id="price_per_unit"
+                    class="form-control"
+                  />
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+                id="close-btn"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                id="save-product-btn"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ url_for('static', filename='js/mpapp.js') }}"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
